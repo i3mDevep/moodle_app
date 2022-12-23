@@ -1,0 +1,261 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_moove/drawers
+
+    Boost drawer template.
+
+    Context variables required for this template:
+    * sitename - The name of the site
+    * output - The core renderer for the page
+    * bodyattributes - attributes for the body tag as a string of html attributes
+    * sidepreblocks - HTML for the blocks
+    * hasblocks - true if there are blocks on this page
+    * courseindexopen - true if the nav drawer should be open on page load
+    * regionmainsettingsmenu - HTML for the region main settings menu
+    * hasregionmainsettingsmenu - There is a region main settings menu on this page.
+
+    Example context (json):
+    {
+        "sitename": "Moodle",
+        "output": {
+            "doctype": "<!DOCTYPE html>",
+            "page_title": "Test page",
+            "favicon": "favicon.ico",
+            "main_content": "<h1>Headings make html validators happier</h1>"
+         },
+        "bodyattributes":"",
+        "sidepreblocks": "<h2>Blocks html goes here</h2>",
+        "hasblocks":true,
+        "courseindexopen": true,
+        "navdraweropen": false,
+        "blockdraweropen": true,
+        "regionmainsettingsmenu": "",
+        "hasregionmainsettingsmenu": false,
+        "addblockbutton": ""
+    }
+}}
+{{> theme_moove/head }}
+
+<body {{{ bodyattributes }}}>
+{{> core/local/toast/wrapper}}
+<div id="page-wrapper" class="d-print-block">
+
+    {{{ output.standard_top_of_body_html }}}
+
+    <div id="frontpage-navbar"> 
+        {{> theme_moove/navbar }}
+    </div>
+
+    <div id="page" data-region="mainpage" data-usertour="scroller" class="drawers drag-container bg-white">
+        {{#slidercount}}
+            <div id="mooveslideshow" class="container-fluid">
+                <div id="carousel-indicators" class="carousel slide carousel-fade" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        {{#slides}}
+                            <li data-target="#carousel-indicators" data-slide-to="{{{ key }}}" {{#active}}class="active"{{/active}}></li>
+                        {{/slides}}
+                    </ol>
+                    <div class="carousel-inner">
+                        {{#slides}}
+                            <div class="carousel-item {{#active}}active{{/active}}">
+                                <img src="{{image}}" alt="{{slidertitle}}" class="w-100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <h5 class="title">{{{title}}}</h5>
+                                    <div class="caption">
+                                        {{{caption}}}
+                                    </div>
+                                </div>
+                            </div>
+                        {{/slides}}
+                    </div>
+                    <a class="carousel-control-prev" href="#carousel-indicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">{{#str}}previous{{/str}}</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carousel-indicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">{{#str}}next{{/str}}</span>
+                    </a>
+                </div>
+            </div>
+        {{/slidercount}}
+
+        {{#displaymarketingbox}}
+            <section id="feature">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-4 my-3">
+                            <h3 class="h1 mt-3 mb-3 marketing-head">{{{marketingheading}}}</h3>
+                            <div class="marketing-content">{{{marketingcontent}}}</div>
+                        </div>
+                        <div class="col-lg-8 ps-xl-8 hidden-mobile-background">
+                            <div class="row">
+                                {{#marketingboxes}}
+                                    <div class="col-sm-6 mt-4">
+                                        <div class="card shadow" style="visibility: hidden;">
+                                            <div class="d-flex">
+                                                <div class="icon-lg text-white rounded-circle">
+                                                    <img src="{{{icon}}}">
+                                                </div>
+                                                <div class="col ps-3">
+                                                    <h5>{{{heading}}}</h5>
+                                                    <div class="box-content">{{{content}}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{/marketingboxes}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="statistic">
+                    <div class="container-flex">
+                        <div>
+                            <svg width="28" height="27" viewBox="0 0 28 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect y="22" width="28" height="5" rx="1" fill="#E33A65"></rect>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10 4V2H18V4H10ZM8 4V1C8 0.447715 8.44772 0 9 0H19C19.5523 0 20 0.447715 20 1V4H27C27.5523 4 28 4.44772 28 5V20C28 20.5523 27.5523 21 27 21H1C0.447715 21 0 20.5523 0 20V5C0 4.44772 0.447715 4 1 4H8ZM9 10H19V15H9V10Z" fill="#172031"></path>
+                            </svg>
+                        </div>
+                        <div class="information-data">    
+                            <span> 18</span>
+                            <p>Operating locations</p>
+                        </div>
+                    </div>
+                    <div class="container-flex">
+                        <div>
+                        <svg width="37" height="27" viewBox="0 0 37 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M3.37503 19.6878C1.36805 20.9422 0 23.0629 0 24.252C0 27.0004 0.00112546 27.0004 12.3751 27.0004C23.8446 27.0004 24.7502 26.8418 24.7502 24.8325C24.7502 23.6389 23.416 21.6139 21.7858 20.3325C18.0452 17.3895 7.87507 16.8754 3.37503 19.6878Z" fill="#172031"/>
+                            <circle cx="11.8126" cy="7.31256" r="7.31256" fill="#172031"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M20.4164 14.1545C22.0421 12.5448 23.0759 10.1276 23.0759 7.42507C23.0759 4.63153 21.9714 2.14287 20.2502 0.535806C21.0999 0.190326 22.0292 0 23.003 0C27.0416 0 30.3155 3.27395 30.3155 7.31256C30.3155 11.3512 27.0416 14.6251 23.003 14.6251C22.0923 14.6251 21.2205 14.4587 20.4164 14.1545Z" fill="#E23965"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M25.6098 26.3277C25.8625 25.5682 26 24.6383 26 23.4998C26 21.0311 23.5746 18.9745 20.3625 18.06C25.1721 17.3764 31.0765 18.2412 33.7345 20.3325C35.3647 21.6139 36.6989 23.6389 36.6989 24.8325C36.6989 25.4481 36.8463 25.8267 36.7207 26.0557C36.4366 26.574 34.7541 26.3257 26.7988 26.3257C26.3919 26.3257 25.9956 26.3264 25.6098 26.3277Z" fill="#E23965"/>
+                        </svg>
+                        </div>
+                        <div class="information-data">    
+                            <span> +3200</span>
+                            <p>Shops</p>
+                        </div>
+                    </div>
+                    <div class="container-flex">
+                        <div>
+                            <svg width="33" height="27" viewBox="0 0 33 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="22.5003" height="2.70004" rx="1.35002" fill="#172131"/>
+                                <rect y="24.2988" width="22.5003" height="2.70004" rx="1.35002" fill="#172131"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M25.6251 18.6555C24.5413 19.4979 23.1796 19.9994 21.7006 19.9994C18.1658 19.9994 15.3003 17.134 15.3003 13.5993C15.3003 10.0646 18.1658 7.19922 21.7006 7.19922C25.2355 7.19922 28.101 10.0646 28.101 13.5993C28.101 15.0785 27.5992 16.4404 26.7566 17.5242L31.7319 22.268C32.0444 22.5805 32.0444 23.087 31.7319 23.3994C31.4195 23.7119 30.9129 23.7119 30.6005 23.3994L25.6251 18.6555ZM16.9004 13.5993C16.9004 10.9483 19.0495 8.79925 21.7006 8.79925C24.3518 8.79925 26.5009 10.9483 26.5009 13.5993C26.5009 14.9185 25.9687 16.1134 25.1074 16.981C25.103 16.9852 25.0988 16.9894 25.0945 16.9936C25.0903 16.9978 25.0861 17.0021 25.082 17.0064C24.2144 17.8675 23.0196 18.3994 21.7006 18.3994C19.0495 18.3994 16.9004 16.2503 16.9004 13.5993Z" fill="#F81964" stroke="#F81964" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <rect y="8.09766" width="11.7002" height="2.70004" rx="1.35002" fill="#172131"/>
+                                <rect y="16.2012" width="11.7002" height="2.70004" rx="1.35002" fill="#172131"/>
+                            </svg>
+                        </div>
+                        <div class="information-data">    
+                            <span> 38</span>
+                            <p>Countries with active online stores</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {{/displaymarketingbox}}
+
+        {{#numbersfrontpage}}
+            <section id="numbers">
+                <div class="moove-container-fluid" style="background-color: #25354d; color: white;">
+                    <div class="row customer-area-l1 justify-content-center align-items-center ">
+                        <div class="col-xl-5 col-lg-5 col-md-10">
+                            <div class="sectionheading">
+                                {{{numberscontent}}}
+                            </div>
+                        </div>
+                        <div class="col-xl-5 col-lg-6 col-md-10 offset-xl-1">
+                            <div class="image-section"></div>
+                            <div class="row user-rating-box-area" style="display:none;">
+                                <div class="col-sm-6 col-xs-8">
+                                    <div class="h-100 rate-box bg-primary">
+                                        <h3>
+                                            {{{numbersusers}}}
+                                        </h3>
+                                        <p>{{#str}}numbersusers, theme_moove{{/str}}</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-xs-8">
+                                    <div class="h-100 rate-box rate-box-2 bg-cloudburst">
+                                        <h3>
+                                            {{{numberscourses}}}
+                                        </h3>
+                                        <p>{{#str}}numberscourses, theme_moove{{/str}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {{/numbersfrontpage}}
+
+        <div id="topofscroll">
+            <div id="page-content" class="d-print-block main-inner">
+                <div id="region-main-box">
+                    <section id="region-main" aria-label="{{#str}}content{{/str}}">
+                        {{{ output.course_content_header }}}
+                        {{{ output.main_content }}}
+                        {{{ output.course_content_footer }}}
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        {{#faqenabled}}
+            <section id="faq" class="scale-up scale-up-show">
+                <div class="moove-container-fluid">
+                    <h2>{{#str}}faq, theme_moove{{/str}}</h2>
+
+                    <div class="accordion" id="accordionFaq">
+                        {{#faq}}
+                            <div class="card shadow">
+                                <div class="card-header" id="heading-{{{id}}}">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse-{{{id}}}" aria-expanded="false" aria-controls="collapse-{{{id}}}">
+                                            {{{question}}}
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div id="collapse-{{{id}}}" class="collapse" aria-labelledby="heading-{{{id}}}" data-parent="#accordionFaq">
+                                    <div class="card-body">
+                                        {{{answer}}}
+                                    </div>
+                                </div>
+                            </div>
+                        {{/faq}}
+                    </div>
+                </div>
+            </section>
+        {{/faqenabled}}
+
+        {{> theme_moove/footer }}
+    </div>
+    {{{ output.standard_after_main_region_html }}}
+</div>
+
+</body>
+</html>
+{{#js}}
+M.util.js_pending('theme_boost/loader');
+require(['theme_boost/loader', 'theme_boost/drawer'], function(Loader, Drawer) {
+    Drawer.init();
+    M.util.js_complete('theme_boost/loader');
+});
+{{/js}}
