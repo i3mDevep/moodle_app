@@ -60,24 +60,24 @@ class qtype_drawioflow extends question_type {
         global $DB;
         $result = new stdClass();
 
-        // Perform sanity checks on fractional grades.
-        $maxfraction = -1;
-        foreach ($question->answer as $key => $answerdata) {
-            if ($question->fraction[$key] > $maxfraction) {
-                $maxfraction = $question->fraction[$key];
-            }
-        }
+        // // Perform sanity checks on fractional grades.
+        // $maxfraction = -1;
+        // foreach ($question->answer as $key => $answerdata) {
+        //     if ($question->fraction[$key] > $maxfraction) {
+        //         $maxfraction = $question->fraction[$key];
+        //     }
+        // }
 
-        if ($maxfraction != 1) {
-            $result->error = get_string('fractionsnomax', 'question', $maxfraction * 100);
-            return $result;
-        }
+        // if ($maxfraction != 1) {
+        //     $result->error = get_string('fractionsnomax', 'question', $maxfraction * 100);
+        //     return $result;
+        // }
 
-        parent::save_question_options($question);
+        // parent::save_question_options($question);
 
-        $this->save_question_answers($question);
+        // $this->save_question_answers($question);
 
-        $this->save_hints($question);
+        // $this->save_hints($question);
     }
 
     protected function fill_answer_fields($answer, $questiondata, $key, $context) {

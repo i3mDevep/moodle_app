@@ -97,21 +97,22 @@ DiagramEditor.prototype.frameStyle = 'max-height:350px;-ms-zoom: 0.75;-moz-trans
  */
 DiagramEditor.prototype.editElement = function(elem)
 {
+	console.log({ elem })
 	var src = this.getElementData(elem);
 	this.startElement = elem;
 	var fmt = this.format;
 
-	if (src.substring(0, 15) === 'data:image/png;')
-	{
-		fmt = 'xmlpng';
-	}
-	else if (src.substring(0, 19) === 'data:image/svg+xml;' ||
-		elem.nodeName.toLowerCase() == 'svg')
-	{
-		fmt = 'xmlsvg';
-	}
+	// if (src.substring(0, 15) === 'data:image/png;')
+	// {
+	// 	fmt = 'xmlpng';
+	// }
+	// else if (src.substring(0, 19) === 'data:image/svg+xml;' ||
+	// 	elem.nodeName.toLowerCase() == 'svg')
+	// {
+	// 	fmt = 'xmlsvg';
+	// }
 
-	this.startEditing(src, fmt);
+	this.startEditing(src, 'xmlpng');
 
 	return this;
 };
