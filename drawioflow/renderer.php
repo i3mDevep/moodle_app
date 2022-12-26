@@ -101,14 +101,12 @@ class qtype_drawioflow_renderer extends qtype_renderer {
                     array('class' => 'validationerror'));
         }
     $fn = '(s)=>{
-            console.log(JSON.stringify(s))
-            var comp = document.getElementById("'.$inputname.'")
+            const comp = document.getElementById("'.$inputname.'")
             comp.value = s
-            console.log(comp)
         }';
         
     $idiframe = 'wrapper-me-diagram'.$inputname;
-    $result .= html_writer::tag('div', $question->format_questiontext($qa), array('class' => 'qtext', 'id' => $idiframe));
+    $result .= html_writer::tag('div', $question->format_questiontext($qa), array('class' => 'qtext cifr', 'id' => $idiframe));
     $result .= html_writer::tag('script', '', array('src' => ''.$CFG->wwwroot.'/question/type/drawioflow/javascript/diagram-editor.js'));
     $result .= html_writer::tag('img', '', array(
             'style' => "height:1px; width: 1px;", 
