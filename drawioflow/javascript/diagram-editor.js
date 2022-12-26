@@ -7,7 +7,7 @@
  *
  * See https://jgraph.github.io/drawio-integration/javascript.html
  */
-function DiagramEditor(config, ui, done, initialized, urlParams, idIframe)
+function DiagramEditor(config, ui, done, initialized, urlParams, idIframe, additionalStyles)
 {
 	this.config = (config != null) ? config : this.config;
 	this.ui = (ui != null) ? ui : this.ui;
@@ -15,8 +15,10 @@ function DiagramEditor(config, ui, done, initialized, urlParams, idIframe)
 	this.initialized = (initialized != null) ? initialized : this.initialized;
 	this.urlParams = urlParams;
 	this.idIframe = idIframe;
+	this.additionalStyles = (additionalStyles != null) ? additionalStyles : this.additionalStyles;
 
 	var self = this;
+	console.log({self})
 
 	this.handleMessageEvent = function(evt)
 	{
@@ -26,7 +28,6 @@ function DiagramEditor(config, ui, done, initialized, urlParams, idIframe)
 			try
 			{
 				var msg = JSON.parse(evt.data);
-				console.log(msg)
 
 				if (msg != null)
 				{
@@ -44,7 +45,7 @@ function DiagramEditor(config, ui, done, initialized, urlParams, idIframe)
 /**
  * Static method to edit the diagram in the given img or object.
  */
-DiagramEditor.editElement = function(elt, config, ui, done, urlParams, idIframe)
+DiagramEditor.editElement = function(elt, config, ui, done, urlParams, idIframe, additionalStyles)
 {
   if (!elt.diagramEditorStarting)
   {
@@ -53,7 +54,7 @@ DiagramEditor.editElement = function(elt, config, ui, done, urlParams, idIframe)
     return new DiagramEditor(config, ui, done, function()
     {
         delete elt.diagramEditorStarting;
-    }, urlParams, idIframe).editElement(elt);
+    }, urlParams, idIframe, additionalStyles).editElement(elt);
    }
 };
 
@@ -90,7 +91,7 @@ DiagramEditor.prototype.libraries = true;
 /**
  * CSS style for the iframe.
  */
-DiagramEditor.prototype.frameStyle = 'max-height:350px;-ms-zoom: 0.75;-moz-transform: scale(0.75);-moz-transform-origin: 0 0;-o-transform: scale(0.75);-o-transform-origin: 0 0;-webkit-transform: scale(0.75);-webkit-transform-origin: 0 0;;border:0;width:120%;height:100%;';
+DiagramEditor.prototype.frameStyle = 'max-height:400px;-ms-zoom: 0.75;-moz-transform: scale(0.75);-moz-transform-origin: 0 0;-o-transform: scale(0.75);-o-transform-origin: 0 0;-webkit-transform: scale(0.75);-webkit-transform-origin: 0 0;;border:0;width:130%;height:100%;';
 
 /**
  * Adds the iframe and starts editing.
@@ -262,9 +263,12 @@ DiagramEditor.prototype.getTitle = function()
  */
 DiagramEditor.prototype.getFrameStyle = function()
 {
-	return this.frameStyle + ';left:' +
+	const s =  this.frameStyle + ';left:' +
 		document.body.scrollLeft + 'px;top:' +
-		document.body.scrollTop + 'px;';
+		document.body.scrollTop + 'px;' +
+		this.additionalStyles;
+	return s
+
 };
 
 /**
@@ -294,6 +298,8 @@ DiagramEditor.prototype.getFrameUrl = function()
 		url += '&' + this.urlParams.join('&');
 	}
 
+	url += '&saveAndExit=0&noSaveBtn=1&noExitBtn=1'
+
 	return url;
 };
 
@@ -306,7 +312,7 @@ DiagramEditor.prototype.createFrame = function(url, style)
 	frame.setAttribute('frameborder', '0');
 	frame.setAttribute('style', style);
 	frame.setAttribute('src', url);
-
+	frame.setAttribute('id', 'iframe_' + this.idIframe );
 	return frame;
 };
 
