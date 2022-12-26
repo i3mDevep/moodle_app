@@ -87,6 +87,8 @@ class qtype_drawioflow_renderer extends qtype_renderer {
             strpos($questiontext, $placeholder), strlen($placeholder));
         }
 
+    
+    $result = '';
     if (!$placeholder) {
         $result .= html_writer::start_tag('div', array('class' => 'ablock form-inline', 'style' => 'display:none;'));
         $result .= html_writer::tag('label', get_string('answer', 'qtype_shortanswer',

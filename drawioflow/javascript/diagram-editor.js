@@ -91,7 +91,7 @@ DiagramEditor.prototype.libraries = true;
 /**
  * CSS style for the iframe.
  */
-DiagramEditor.prototype.frameStyle = 'max-height:400px;-ms-zoom: 0.75;-moz-transform: scale(0.75);-moz-transform-origin: 0 0;-o-transform: scale(0.75);-o-transform-origin: 0 0;-webkit-transform: scale(0.75);-webkit-transform-origin: 0 0;;border:0;width:130%;height:100%;';
+DiagramEditor.prototype.frameStyle = 'max-height:400px;-ms-zoom: 0.75;-moz-transform: scale(0.75);-moz-transform-origin: 0 0;-o-transform: scale(0.75);-o-transform-origin: 0 0;-webkit-transform: scale(0.75);-webkit-transform-origin: 0 0;;border:0;width:130%;height:400px;';
 
 /**
  * Adds the iframe and starts editing.
