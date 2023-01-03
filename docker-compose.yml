@@ -28,8 +28,9 @@ services:
     volumes:
       - 'moodle_data:/bitnami/moodle'
       - 'moodledata_data:/bitnami/moodledata'
-      - './local/:/bitnami/moodle/local'
       - './drawioflow/:/bitnami/moodle/question/type/drawioflow'
+      - './preview/:/bitnami/moodle/blocks/preview'
+
     depends_on:
       - mariadb
 volumes:

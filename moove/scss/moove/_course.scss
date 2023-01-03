@@ -87,6 +87,37 @@
     }
 }
 
+
+#frontpage-category-combo {
+    h2 {
+        display: none;
+    }
+}
+
+div[data-depth="1"] > .info  {
+    
+    .categoryname {
+        background-image: none !important;
+        pointer-events: none;
+    }
+
+    a {
+        pointer-events: auto;
+        font-size: 1.5rem;
+        color: black;
+        font-weight: 400;
+    }
+}
+
+div[data-depth="2"] > .info  {
+
+    a {
+        font-size: 1rem;
+        margin-left: 10px
+    }
+}
+
+
 @include media-breakpoint-down(md) {
     .activity-navigation {
         .larrow,

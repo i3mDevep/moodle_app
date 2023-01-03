@@ -4,3 +4,5 @@ php admin/cli/uninstall_plugin.php --plugins=local_message --run
 php admin/cli/upgrade.php
 
 https://stackoverflow.com/questions/166160/how-can-i-scale-the-content-of-an-iframe
+docker volume rm $(docker volume ls -q)
+sudo docker rm -f $(sudo docker ps -a -q)
