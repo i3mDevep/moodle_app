@@ -77,11 +77,26 @@ class block_preview extends block_base {
             $this->content->text = '';
         }
 
-        $this->content->text = '<div id="preview_container2" style="display: flex;" >
-        <div style="position: relative;height: 150px;min-width: 250px;">
-        <iframe id="id_videojs_63af1cbf226ef_1_youtube_api" style="width:400px;height:230px;top:-50px;left:-100px;position:absolute;transform: scale(0.5);" class="vjs-tech" allowfullscreen="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" title="How to build a Learning Management System (LMS) with Open edX." 
-        src="'.$this->config->video.'" width="640" height="360" frameborder="0"></iframe>
-        </div><div>'.$this->content->text.'<a href="'.$this->config->url.'">See more...</a></div></div>';
+        $this->content->text = '
+        <div id="preview_container" style="display: flex;gap:15px;" >
+            <div style="position: relative;height: 150px;min-width: 300px;">
+                <iframe id="id_videojs_63af1cbf226ef_1_youtube_api" style="width:500px;height:260px;top:-60px;left:-100px;position:absolute;transform: scale(0.5);border-radius: 20px;" class="vjs-tech" allowfullscreen="1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" title="How to build a Learning Management System (LMS) with Open edX." 
+                src="'.$this->config->video.'" width="640" height="360" frameborder="0"></iframe>
+            </div>
+            <div style="font-size: 0.8rem;">'
+                .$this->content->text.
+                '<a href="'.$this->config->url.'">Read more...</a>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="d-flex" style="gap:5px;">
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
+                </div>
+            </div>
+        </div>';
         unset($filteropt);
         return $this->content;
     }
