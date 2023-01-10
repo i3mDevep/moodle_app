@@ -30,6 +30,7 @@ services:
       - 'moodledata_data:/bitnami/moodledata'
       - './drawioflow/:/bitnami/moodle/question/type/drawioflow'
       - './preview/:/bitnami/moodle/blocks/preview'
+      - './moove/:/bitnami/moodle/theme/moove'
 
     depends_on:
       - mariadb

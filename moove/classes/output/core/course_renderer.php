@@ -29,6 +29,7 @@ use coursecat_helper;
 use stdClass;
 use core_course_list_element;
 use theme_moove\util\course;
+use core_tag_tag;
 
 /**
  * Renderers to align Moove's course elements to what is expect
@@ -187,6 +188,7 @@ class course_renderer extends \core_course_renderer {
      * @throws \moodle_exception
      */
     protected function coursecat_coursebox_content(coursecat_helper $chelper, $course) {
+        global $OUTPUT;
         if ($course instanceof stdClass) {
             $course = new core_course_list_element($course);
         }
@@ -200,6 +202,7 @@ class course_renderer extends \core_course_renderer {
 
         $courseprogress = $courseutil->get_progress();
         $hasprogress = $courseprogress != null;
+        $tags = core_tag_tag::get_item_tags('core', 'course', $course->id);
 
         $data = [
             'id' => $course->id,
@@ -214,7 +217,8 @@ class course_renderer extends \core_course_renderer {
             'hasenrolmenticons' => $courseenrolmenticons != false,
             'enrolmenticons' => $courseenrolmenticons,
             'hascontacts' => !empty($coursecontacts),
-            'contacts' => $coursecontacts
+            'contacts' => $coursecontacts,
+            'tags' =>  $OUTPUT->tag_list($tags, 'Tags')
         ];
 
         return $this->render_from_template('theme_moove/moove_coursecard', $data);
