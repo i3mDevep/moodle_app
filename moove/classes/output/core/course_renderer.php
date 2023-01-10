@@ -188,7 +188,6 @@ class course_renderer extends \core_course_renderer {
      * @throws \moodle_exception
      */
     protected function coursecat_coursebox_content(coursecat_helper $chelper, $course) {
-        global $OUTPUT;
         if ($course instanceof stdClass) {
             $course = new core_course_list_element($course);
         }
@@ -202,6 +201,7 @@ class course_renderer extends \core_course_renderer {
 
         $courseprogress = $courseutil->get_progress();
         $hasprogress = $courseprogress != null;
+
         $tags = core_tag_tag::get_item_tags('core', 'course', $course->id);
 
         $data = [
