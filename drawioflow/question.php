@@ -35,15 +35,47 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  THEYEAR YOURNAME (YOURCONTACTINFO)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_drawioflow_question extends question_graded_by_strategy
-implements question_response_answer_comparer {
+class qtype_drawioflow_question extends question_with_responses {
 
-    public $usecase;
-    /** @var array of question_answer. */
-    public $answers = array();
+    public $responseformat;
 
-    public function __construct() {
-        parent::__construct(new question_first_matching_answer_grading_strategy($this));
+    /** @var int Indicates whether an inline response is required ('0') or optional ('1')  */
+    public $responserequired;
+
+    public $responsefieldlines;
+
+    /** @var int indicates whether the minimum number of words required */
+    public $minwordlimit;
+
+    /** @var int indicates whether the maximum number of words required */
+    public $maxwordlimit;
+
+    public $attachments;
+
+    /** @var int maximum file size in bytes */
+    public $maxbytes;
+
+    /** @var int The number of attachments required for a response to be complete. */
+    public $attachmentsrequired;
+
+    public $graderinfo;
+    public $graderinfoformat;
+    public $responsetemplate;
+    public $responsetemplateformat;
+
+    /** @var array The string array of file types accepted upon file submission. */
+    public $filetypeslist;
+
+    public function make_behaviour(question_attempt $qa, $preferredbehaviour) {
+        return question_engine::make_behaviour('manualgraded', $qa, $preferredbehaviour);
+    }
+
+    /**
+     * @param moodle_page the page we are outputting to.
+     * @return qtype_essay_format_renderer_base the response-format-specific renderer.
+     */
+    public function get_format_renderer(moodle_page $page) {
+        return $page->get_renderer('qtype_drawioflow', 'format_' . $this->responseformat);
     }
 
     public function get_expected_data() {
@@ -68,9 +100,20 @@ implements question_response_answer_comparer {
 
     public function is_complete_response(array $response) {
         return array_key_exists('answer', $response) &&
-                ($response['answer'] || $response['answer'] === '0');
+        ($response['answer'] || $response['answer'] === '0');
     }
 
+    public function get_correct_response() {
+        return null;
+    }
+
+    /**
+     * Return null if is_complete_response() returns true
+     * otherwise, return the minmax-limit error message
+     *
+     * @param array $response
+     * @return string
+     */
     public function get_validation_error(array $response) {
         if ($this->is_gradable_response($response)) {
             return '';
@@ -78,112 +121,40 @@ implements question_response_answer_comparer {
         return get_string('pleaseenterananswer', 'qtype_shortanswer');
     }
 
-    public function is_same_response(array $prevresponse, array $newresponse) {
-
-        return question_utils::arrays_same_at_key_missing_is_blank(
-                $prevresponse, $newresponse, 'answer');
-    }
-
-    public function get_answers() {
-        return $this->answers;
-    }
-
-    public function compare_response_with_answer(array $response, question_answer $answer) {
-        if (!array_key_exists('answer', $response) || is_null($response['answer'])) {
+    public function is_gradable_response(array $response) {
+        // Determine if the given response has online text and attachments.
+        if (array_key_exists('answer', $response) && ($response['answer'] !== '')) {
+            return true;
+        } else if (array_key_exists('attachments', $response)
+                && $response['attachments'] instanceof question_response_files) {
+            return true;
+        } else {
             return false;
         }
-
-        return self::compare_string_with_wildcard(
-                $response['answer'], $answer->answer, !$this->usecase);
     }
 
-    public static function compare_string_with_wildcard($string, $pattern, $ignorecase) {
+    public function is_same_response(array $prevresponse, array $newresponse) {
+        
+        return question_utils::arrays_same_at_key_missing_is_blank(
+            $prevresponse, $newresponse, 'answer');
 
-        // Normalise any non-canonical UTF-8 characters before we start.
-        $pattern = self::safe_normalize($pattern);
-        $string = self::safe_normalize($string);
-
-        // Break the string on non-escaped runs of asterisks.
-        // ** is equivalent to *, but people were doing that, and with many *s it breaks preg.
-        $bits = preg_split('/(?<!\\\\)\*+/', $pattern);
-
-        // Escape regexp special characters in the bits.
-        $escapedbits = array();
-        foreach ($bits as $bit) {
-            $escapedbits[] = preg_quote(str_replace('\*', '*', $bit), '|');
-        }
-        // Put it back together to make the regexp.
-        $regexp = '|^' . implode('.*', $escapedbits) . '$|u';
-
-        // Make the match insensitive if requested to.
-        if ($ignorecase) {
-            $regexp .= 'i';
-        }
-
-        return preg_match($regexp, trim($string));
     }
 
-    /**
-     * Normalise a UTf-8 string to FORM_C, avoiding the pitfalls in PHP's
-     * normalizer_normalize function.
-     * @param string $string the input string.
-     * @return string the normalised string.
-     */
-    protected static function safe_normalize($string) {
-        if ($string === '') {
-            return '';
-        }
+    public function check_file_access($qa, $options, $component, $filearea, $args, $forcedownload) {
+        if ($component == 'question' && $filearea == 'response_attachments') {
+            // Response attachments visible if the question has them.
+            return $this->attachments != 0;
 
-        if (!function_exists('normalizer_normalize')) {
-            return $string;
-        }
+        } else if ($component == 'question' && $filearea == 'response_answer') {
+            // Response attachments visible if the question has them.
+            return $this->responseformat === 'editorfilepicker';
 
-        $normalised = normalizer_normalize($string, Normalizer::FORM_C);
-        if (is_null($normalised)) {
-            // An error occurred in normalizer_normalize, but we have no idea what.
-            debugging('Failed to normalise string: ' . $string, DEBUG_DEVELOPER);
-            return $string; // Return the original string, since it is the best we have.
-        }
-
-        return $normalised;
-    }
-
-    public function get_correct_response() {
-        $response = parent::get_correct_response();
-        if ($response) {
-            $response['answer'] = $this->clean_response($response['answer']);
-        }
-        return $response;
-    }
-
-    public function clean_response($answer) {
-        // Break the string on non-escaped asterisks.
-        $bits = preg_split('/(?<!\\\\)\*/', $answer);
-
-        // Unescape *s in the bits.
-        $cleanbits = array();
-        foreach ($bits as $bit) {
-            $cleanbits[] = str_replace('\*', '*', $bit);
-        }
-
-        // Put it back together with spaces to look nice.
-        return trim(implode(' ', $cleanbits));
-    }
-
-    public function check_file_access($qa, $options, $component, $filearea,
-            $args, $forcedownload) {
-        if ($component == 'question' && $filearea == 'answerfeedback') {
-            $currentanswer = $qa->get_last_qt_var('answer');
-            $answer = $this->get_matching_answer(array('answer' => $currentanswer));
-            $answerid = reset($args); // Itemid is answer id.
-            return $options->feedback && $answer && $answerid == $answer->id;
-
-        } else if ($component == 'question' && $filearea == 'hint') {
-            return $this->check_hint_file_access($qa, $options, $args);
+        } else if ($component == 'qtype_essay' && $filearea == 'graderinfo') {
+            return $options->manualcomment && $args[0] == $this->id;
 
         } else {
-            return parent::check_file_access($qa, $options, $component, $filearea,
-                    $args, $forcedownload);
+            return parent::check_file_access($qa, $options, $component,
+                    $filearea, $args, $forcedownload);
         }
     }
 
@@ -196,7 +167,42 @@ implements question_response_answer_comparer {
      * @return mixed structure representing the question settings. In web services, this will be JSON-encoded.
      */
     public function get_question_definition_for_external_rendering(question_attempt $qa, question_display_options $options) {
-        // No need to return anything, external clients do not need additional information for rendering this question type.
-        return null;
+        // This is a partial implementation, returning only the most relevant question settings for now,
+        // ideally, we should return as much as settings as possible (depending on the state and display options).
+
+        $settings = [
+            'responseformat' => $this->responseformat,
+            'responserequired' => $this->responserequired,
+            'responsefieldlines' => $this->responsefieldlines,
+            'attachments' => $this->attachments,
+            'attachmentsrequired' => $this->attachmentsrequired,
+            'maxbytes' => $this->maxbytes,
+            'filetypeslist' => $this->filetypeslist,
+            'responsetemplate' => $this->responsetemplate,
+            'responsetemplateformat' => $this->responsetemplateformat,
+            'minwordlimit' => $this->minwordlimit,
+            'maxwordlimit' => $this->maxwordlimit,
+        ];
+
+        return $settings;
     }
+
+    /**
+     * Check the input word count and return a message to user
+     * when the number of words are outside the boundary settings.
+     *
+     * @param string $responsestring
+     * @return string|null
+     .*/
+
+
+    /**
+     * If this question uses word counts, then return a display of the current
+     * count, and whether it is within limit, for when the question is being reviewed.
+     *
+     * @param array $response responses, as returned by
+     *      {@see question_attempt_step::get_qt_data()}.
+     * @return string If relevant to this question, a display of the word count.
+     */
+    
 }
